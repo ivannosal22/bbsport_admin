@@ -1,0 +1,41 @@
+<!-- Listing the all users -->
+<div class="col-md-12 col-lg-12">
+    <nz-card>
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>List of stadiums</h5>
+
+        </div>
+        <div class="m-t-30">
+            <nz-table #productTable [nzData]="userTable" [nzShowPagination]="false" class="no-border-last">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>User Name</th>
+                        <th>Role</th>
+                        <th>Created Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of userTable; let i = index">
+                        <th>{{i+1}}</th>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.role }}</td>
+                        <td>{{ item.created | date }}</td>
+                        <td>
+                            <a nz-dropdown [nzDropdownMenu]="menu">
+                                <i nz-icon nzType="more"></i>
+                            </a>
+                            <nz-dropdown-menu #menu="nzDropdownMenu">
+                                <ul nz-menu nzSelectable>
+
+                                    <li nz-menu-item>Delete</li>
+                                </ul>
+                            </nz-dropdown-menu>
+                        </td>
+                    </tr>
+                </tbody>
+            </nz-table>
+        </div>
+    </nz-card>
+</div>

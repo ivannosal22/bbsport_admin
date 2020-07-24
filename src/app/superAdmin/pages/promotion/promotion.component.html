@@ -1,0 +1,67 @@
+<div style="width: 100%;text-align: right;">
+    <button nz-button nzType="primary" (click)="viewPromotions()" style="margin-top: 20px;">View All Promotion</button>
+</div>
+
+
+<nz-divider nzText="Add Promotion" nzOrientation="left"></nz-divider>
+
+<div class="clearfix">
+    <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/" nzListType="picture-card"
+        [(nzFileList)]="fileList" [nzShowButton]="fileList.length < 1" [nzShowUploadList]="showUploadList"
+        [nzPreview]="handlePreview" [nzBeforeUpload]="beforeUpload" (nzChange)="handleChange($event)">
+        <i nz-icon nzType="plus"></i>
+        <div class="ant-upload-text">Upload</div>
+    </nz-upload>
+
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+        (nzOnCancel)="previewVisible = false">
+        <ng-template #modalContent>
+            <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+    </nz-modal>
+</div>
+
+
+
+<form nz-form [formGroup]="promotionForm" style="text-align: center;">
+    <input class="layoutTop" formControlName="promotionText" nz-input placeholder="Promotion text" />
+    <p class="error" *ngIf="promotionForm.get('promotionText')?.dirty && promotionForm.get('promotionText')?.errors">
+        Missing promotion text!
+    </p>
+
+
+    <nz-select style="width: 100%;margin-top: 20px;" formControlName="stadiumId" nzAllowClear
+        nzPlaceHolder="Choose stadium for promote">
+        <nz-option *ngFor="let stadiumList of stadiumList" nzValue="{{stadiumList._id}}"
+            nzLabel="{{stadiumList.stadiumName}}">
+        </nz-option>
+    </nz-select>
+
+
+    <button nz-button nzType="primary" [nzLoading]="loading" [disabled]="promotionForm.invalid" (click)="uploadImage()"
+        style="margin-top: 20px;">Publish Promotion</button>
+</form>
+
+
+
+<nz-modal [nzVisible]="allPromotion" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="allPromotion = false">
+    <ng-template #modalContent>
+        <nz-table [nzData]="promotionTable" [nzShowPagination]="false" class="no-border-last"
+            [nzLoading]="loadingPromotion">
+            <thead>
+                <tr>
+                    <th>Promotion Image</th>
+                    <th>Promotion Text</th>
+                    <th>Stadium Id</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of promotionTable">
+                    <td><img src="{{ item?.promotionImage }}" style="width: 40px;height:40px;"></td>
+                    <td>{{ item?.promotionText }}</td>
+                    <td>{{ item?.promotionStadiumId }}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </ng-template>
+</nz-modal>

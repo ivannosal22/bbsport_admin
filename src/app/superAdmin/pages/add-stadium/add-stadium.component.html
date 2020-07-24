@@ -1,0 +1,159 @@
+<h2>Add Stadium</h2>
+
+<div nz-row>
+    <div class="clearfix">
+        <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/" nzListType="picture-card"
+            [(nzFileList)]="fileList" [nzShowButton]="fileList.length < 5" [nzShowUploadList]="showUploadList"
+            [nzPreview]="handlePreview">
+            <i nz-icon nzType="plus"></i>
+            <div class="ant-upload-text">Upload Images</div>
+        </nz-upload>
+
+        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+            (nzOnCancel)="previewVisible = false">
+            <ng-template #modalContent>
+                <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+            </ng-template>
+        </nz-modal>
+    </div>
+</div>
+
+
+<!-- form start here -->
+<form nz-form [formGroup]="stadiumForm">
+    <nz-divider></nz-divider>
+
+
+    <input class="layoutTop" formControlName="stadiumName" nz-input placeholder="Name of the stadium" />
+    <p class="error" *ngIf="stadiumForm.get('stadiumName')?.dirty && stadiumForm.get('stadiumName')?.errors">
+        Missing stadium name!
+    </p>
+
+
+    <input class="layoutTop" formControlName="stadiumDescription" nz-input placeholder="Stadium Description" />
+    <p class="error"
+        *ngIf="stadiumForm.get('stadiumDescription')?.dirty && stadiumForm.get('stadiumDescription')?.errors">
+        Missing Stadium description!
+    </p>
+
+
+    <div nz-row>
+        <div nz-col nzSpan="12">
+            <nz-form-label>Choose open time</nz-form-label>
+            <nz-time-picker class="layoutTop" formControlName="openTime" [nzUse12Hours]="true" nzFormat="h:mm a">
+            </nz-time-picker>
+            <p class="error" *ngIf="stadiumForm.get('openTime')?.dirty && stadiumForm.get('openTime')?.errors">
+                Missing open time!
+            </p>
+        </div>
+
+        <div nz-col nzSpan="12">
+            <nz-form-label class="left">Choose close time</nz-form-label>
+            <nz-time-picker class="layoutTop" formControlName="closeTime" [nzUse12Hours]="true" nzFormat="h:mm a">
+            </nz-time-picker>
+            <p class="error" *ngIf="stadiumForm.get('closeTime')?.dirty && stadiumForm.get('closeTime')?.errors">
+                Missing close time!
+            </p>
+        </div>
+    </div>
+
+
+    <br>
+
+    <div class="layoutTop fesility">
+        <nz-select style="width: 100%;" nzMode="multiple" formControlName="facilities" nzAllowClear
+            nzPlaceHolder="Choose avaialable fesility">
+            <nz-option *ngFor="let facility of facilities" nzValue="{{facility.facilityName}}"
+                nzLabel="{{facility.facilityName}}">
+            </nz-option>
+        </nz-select>
+        <button nz-button nzType="default" (click)="showFesilityModel()"><i nz-icon nzType="plus"></i>Add More
+            Facility</button>
+    </div>
+
+    <br>
+
+
+    <input class="layoutTop" formControlName="amount" nz-input placeholder="Amount per hour in OMR" />
+    <p class="error" *ngIf="stadiumForm.get('amount')?.dirty && stadiumForm.get('amount')?.errors">
+        Missing amount per hour!
+    </p>
+
+
+    <label nz-checkbox (ngModelChange)="subscriptionChange($event)" formControlName="subscription"
+        class="layoutTop">Enable
+        Subscriptions</label>
+
+    <div *ngIf="subscriptionEnabled">
+        <input class="layoutTop" formControlName="subscriptionMonth" nz-input placeholder="Subscription month" />
+        <p class="error"
+            *ngIf="stadiumForm.get('subscriptionMonth')?.dirty && stadiumForm.get('subscriptionMonth')?.errors">
+            Missing subscription month!
+        </p>
+
+        <input class="layoutTop" formControlName="subscriptionAmount" nz-input placeholder="Subscription amount" />
+        <p class="error"
+            *ngIf="stadiumForm.get('subscriptionAmount')?.dirty && stadiumForm.get('subscriptionAmount')?.errors">
+            Missing subscription amount!
+        </p>
+    </div>
+
+    <input class="layoutTop" formControlName="tax" nz-input placeholder="Enter tax amount" />
+
+
+    <nz-select class="layoutTop" style="width: 100%;" formControlName="paymentOption" nzAllowClear
+        nzPlaceHolder="Choose payment options">
+        <nz-option nzValue="full" nzLabel="full payment"></nz-option>
+        <nz-option nzValue="half" nzLabel="half payment"></nz-option>
+    </nz-select>
+
+
+
+    <!-- ---------------- map start ----------------------- -->
+    <p class="layoutTop" style="margin-bottom: -15px;">Drag and select stadium location</p>
+    <div class="maps">
+        <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true"
+                (dragEnd)="markerDragEnd($event)"></agm-marker>
+        </agm-map>
+    </div>
+
+
+    <div style="text-align: center;margin-top: 50px">
+        <button nz-button [nzLoading]="isAddStadium" [disabled]="stadiumForm.invalid" (click)="addStadium()"
+            nzType="primary"><i nz-icon nzType="plus"></i>ADD
+            STADIUM</button>
+    </div>
+</form>
+
+
+
+<!-- ---------------- map end ----------------------- -->
+
+<!-- Show the model -->
+<nz-modal [(nzVisible)]="fesilityModalVisible" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <input nz-input [(ngModel)]="facility" placeholder="Enter your facility name" nzSize="default"
+        style="margin-top: 20px;" />
+    <button nz-button nzType="primary" [nzLoading]="isAddFacility" style="margin-top: 10px;"
+        (click)="addFacilities(facility)"><i nz-icon nzType="plus"></i>Add Facility</button>
+
+
+    <nz-divider></nz-divider>
+    <div>
+        <nz-table class="no-border-last" [nzData]=[1] [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let facility of facilities">
+                    <td>{{facility.facilityName}}</td>
+                    <td><button nz-button nzType="default"><i nz-icon nzType="delete"></i></button></td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </div>
+
+</nz-modal>

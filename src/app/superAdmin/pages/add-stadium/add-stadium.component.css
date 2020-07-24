@@ -1,0 +1,31 @@
+.layoutTop {
+  margin-top: 20px;
+}
+.btn {
+  width: 50%;
+  margin: auto;
+}
+.error {
+  font-size: 12px;
+  color: #f43636;
+}
+.left {
+  margin-left: 50px;
+}
+
+.fesility {
+  display: inline-flex;
+  width: 100%;
+}
+
+.ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+agm-map {
+  height: 300px;
+}
+.maps {
+  margin: 25px 0 25px 0;
+}

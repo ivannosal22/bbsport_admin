@@ -1,0 +1,24 @@
+<div>
+    <br>
+    <h3>All Reports</h3>
+    <nz-divider></nz-divider>
+
+    <div nz-row>
+        <div nz-col nzSpan="12">
+            <nz-select style="width: 100%;" [(ngModel)]="selectedValue" nzAllowClear
+                nzPlaceHolder="Choose report you want">
+                <nz-option nzValue="1" nzLabel="User Report"></nz-option>
+                <nz-option nzValue="2" nzLabel="Booking Report"></nz-option>
+            </nz-select>
+        </div>
+
+        <div nz-col nzSpan="12">
+            <nz-range-picker [(ngModel)]="dateRange" (ngModelChange)="onChange($event)"></nz-range-picker>
+        </div>
+    </div>
+
+    <div style="text-align: center;margin-top: 50px">
+        <button nz-button nzType="primary"><i nz-icon nzType="rise"></i>Get Report</button>
+    </div>
+
+</div>

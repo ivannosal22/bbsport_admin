@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "bb-sports"
+  },
+  "targets": {
+    "bb-sports": {
+      "hosting": {
+        "bbsportsuperadmin": [
+          "bbsportsuperadmin"
+        ]
+      }
+    }
+  }
+}
